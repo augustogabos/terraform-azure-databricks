@@ -1,0 +1,8 @@
+---
+steps:
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+  displayName: Terraform Validate
+  inputs:
+    command: 'validate'
+    workingDirectory: $(System.DefaultWorkingDirectory)
+    allowTelemetryCollection: true

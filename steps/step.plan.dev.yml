@@ -1,0 +1,25 @@
+---
+steps:
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+  displayName: Terraform-Create-Workspace
+  inputs:
+    command: 'workspace'
+    workspaceSubCommand: 'new'
+    workspaceName: 'Dev'
+    allowTelemetryCollection: true
+    skipExistingWorkspace: true
+    workingDirectory: '$(build.sourcesdirectory)'
+
+- task: PowerShell@2
+  displayName: "Terraform workspace: Dev"
+  inputs:
+    targetType: 'inline'
+    script: 'terraform workspace select Dev'
+    workingDirectory: '$(build.sourcesdirectory)'
+
+- task: PowerShell@2
+  displayName: "Terraform plan"
+  inputs:  
+    targetType: 'inline'
+    script: 'terraform plan -var "resource_group_name=$(kv-resource-group)" -var "environment=dev" -var "resource_group_location=$(kv-rg-location)"'
+    workingDirectory: '$(build.sourcesdirectory)'

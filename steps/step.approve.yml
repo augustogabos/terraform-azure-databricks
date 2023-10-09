@@ -1,0 +1,8 @@
+---
+steps:
+- task: ManualValidation@0
+  timeoutInMinutes: 4320 # task times out in 3 days
+  inputs:
+    notifyUsers: example@gmail.com # configure some email validation here
+    instructions: 'Please validate the build configuration and resume'
+    onTimeout: 'reject'

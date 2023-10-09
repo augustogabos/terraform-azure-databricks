@@ -1,0 +1,25 @@
+---
+steps:
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+  displayName: 'terraform init'
+  inputs:
+    command: init
+    backendType: azurerm
+    backendServiceArm: 'your-service-connection'
+    backendAzureRmSubscriptionId: '$(kv-arm-subscription-id)'
+    ensureBackend: true
+    backendAzureRmResourceGroupName: '$(kv-resource-group)'
+    backendAzureRmResourceGroupLocation: '$(kv-rg-location)'
+    backendAzureRmStorageAccountSku: 'Standard_LRS'
+    backendAzureRmStorageAccountName: '$(kv-storage-account)'
+    backendAzureRmContainerName: '$(kv-container)'
+    backendAzureRmKey: '$(kv-storage-key)'
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
+    commandOptions: '-reconfigure'
+  env:
+    TF_STATE-RESOURCE_GROUP:      $(kv-resource-group)
+    TF_STATE_BLOB_ACCOUNT_NAME:   $(kv-storage-account)
+    TF_STATE_BLOB_CONTAINER_NAME: $(kv-container)
+    TF_STATE_BLOB_FILE:           $(kv-storage-key)
+    TF_STATE_BLOB_SAS_TOKEN:      $(kv-tf-state-sas-token)
+    ARM_SUBSCRIPTION_ID:          $(kv-arm-subscription-id)

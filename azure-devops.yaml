@@ -1,0 +1,79 @@
+variables:
+  - group: terraform-vars-group
+
+stages:
+  - stage: Dev
+    displayName: Provision Dev
+
+    jobs:
+    - job: Validate
+      displayName: Terraform Validate Dev
+      pool:
+        vmImage: ubuntu-latest
+      steps:
+        - template: steps/step.init.dev.yml
+        - template: steps/step.validate.yml
+
+    - job: Plan
+      dependsOn: Validate
+      pool:
+        vmImage: ubuntu-latest
+      displayName: Terraform Plan Dev
+      steps:
+        - template: steps/step.init.dev.yml
+        - template: steps/step.plan.dev.yml
+
+    - job: Approve
+      dependsOn: Plan
+      condition: and (succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+      pool: server
+      displayName: Wait for approval
+      steps:
+        - template: steps/step.approve.yml
+
+    - job: Apply
+      dependsOn: Approve
+      pool:
+        vmImage: ubuntu-latest
+      displayName: Terraform Apply Dev
+      steps:
+        - template: steps/step.init.dev.yml
+        - template: steps/step.apply.dev.yml
+
+  - stage: Hml
+    displayName: Provision Hml
+
+    jobs:
+    - job: Validate
+      displayName: Terraform Validate Hml
+      pool:
+        vmImage: ubuntu-latest
+      steps:
+        - template: steps/step.init.hml.yml
+        - template: steps/step.validate.yml
+
+    - job: Plan
+      dependsOn: Validate
+      pool:
+        vmImage: ubuntu-latest
+      displayName: Terraform Plan Hml
+      steps:
+        - template: steps/step.init.hml.yml
+        - template: steps/step.plan.hml.yml
+
+    - job: Approve
+      dependsOn: Plan
+      condition: and (succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+      pool: server
+      displayName: Wait for approval
+      steps:
+        - template: steps/step.approve.yml
+
+    - job: Apply
+      dependsOn: Approve
+      pool:
+        vmImage: ubuntu-latest
+      displayName: Terraform Apply Hml
+      steps:
+        - template: steps/step.init.hml.yml
+        - template: steps/step.apply.hml.yml
